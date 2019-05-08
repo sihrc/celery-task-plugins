@@ -4,7 +4,7 @@ from setuptools import setup
 redis_chain_store_requires = ["redis==3.2.1", "hiredis==1.0.0"]
 
 setup(
-    name="celery-task-plugins",
+    name="celery_task_plugins",
     version="0.1",
     description="Celery task plugins that wrap celery tasks",
     author="Chris Lee",

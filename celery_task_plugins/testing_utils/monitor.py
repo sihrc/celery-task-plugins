@@ -9,18 +9,19 @@ def celery_monitor(app, event):
 
     tasks = []
 
-    def print_event(event):
+    def store_event(event):
         state.event(event)
         task = state.tasks.get(event["uuid"])
         tasks.append(task)
 
     def listen():
         with app.connection() as connection:
-            recv = app.events.Receiver(connection, handlers={event: print_event})
+            recv = app.events.Receiver(connection, handlers={event: store_event})
             recv.capture(limit=None, timeout=None, wakeup=True)
 
     t = threading.Thread(target=listen)
     t.daemon = True
     t.start()
+    time.sleep(1)
     yield tasks
     time.sleep(1)

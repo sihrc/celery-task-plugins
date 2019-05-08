@@ -14,7 +14,7 @@ services:
       - celery-redis
       - rabbitmq
     volumes:
-      - .:/celery-task-plugins
+      - .:/celery_task_plugins
 
   celery-redis:
     image: redis:latest
