@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  celery-task-plugins:
+    container_name: celery-task-plugins
+    image: celery-task-plugins
+    build:
+      context: .
+      args:
+        EXTRAS: "[test]"
+    tty: true
+    entrypoint: ["bash"]
+    volumes:
+      - .:/celery-task-plugins
