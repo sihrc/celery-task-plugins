@@ -9,6 +9,19 @@ services:
       args:
         EXTRAS: "[test]"
     tty: true
-    entrypoint: ["bash"]
+    entrypoint: ["bash"] #["pytest", "-sv", "."]
+    depends_on:
+      - celery-redis
+      - rabbitmq
     volumes:
       - .:/celery-task-plugins
+
+  celery-redis:
+    image: redis:latest
+
+  rabbitmq:
+    image: rabbitmq:latest
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq_user
+      RABBITMQ_DEFAULT_PASS: rabbitmq_password
+      RABBITMQ_ERLANG_COOKIE: rabbitmq_erlang_cookie

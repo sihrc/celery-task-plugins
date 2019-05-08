@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-from setuptools import setup, find_packages
+from setuptools import setup
+
+redis_chain_store_requires = ["redis==3.2.1", "hiredis==1.0.0"]
 
 setup(
     name="celery-task-plugins",
@@ -7,7 +9,10 @@ setup(
     description="Celery task plugins that wrap celery tasks",
     author="Chris Lee",
     author_email="sihrc.c.lee@gmail.com",
-    packages=find_packages(),
-    install_requires=[],
-    extras_require={"test": ["pytest"]},
+    packages=["celery_task_plugins"],
+    install_requires=["celery==4.3.0"],
+    extras_require={
+        "redis_chain_store_requires": redis_chain_store_requires,
+        "test": ["pytest"] + redis_chain_store_requires,
+    },
 )
