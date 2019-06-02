@@ -11,11 +11,14 @@ def CeleryChainPlugin(
     redis_port=6379,
     redis_db=1,
     base_exc_class=Exception,
+    read_kwarg="_read_chain_results",
+    store_kwarg="_store_chain_results",
     store_expires=3600,
 ):
     class CeleryChainTask(Task):
         store_chain_results = False
         read_chain_results = False
+        typing = False
 
         thread_context = threading.local()
         thread_context.redis_chain_store = redis.ConnectionPool(
@@ -48,8 +51,8 @@ def CeleryChainPlugin(
                     return task_id
 
         @contextmanager
-        def with_chain_args(self, args):
-            if not self.read_chain_results:
+        def with_chain_args(self, args, kwarg_override=False):
+            if not self.read_chain_results or kwarg_override:
                 yield args
             else:
                 result_id = args[0]
@@ -65,8 +68,11 @@ def CeleryChainPlugin(
                     self.chain_store.delete(result_id)
 
         def __call__(self, *args, **kwargs):
+            self.read_chain_results = kwargs.pop(read_kwarg, self.read_chain_results)
+            self.store_chain_results = kwargs.pop(store_kwarg, self.store_chain_results)
+
             with self.with_chain_args(args) as args:
-                result = self.run(*args, **kwargs)
+                result = super(CeleryChainTask, self).__call__(*args, **kwargs)
 
             if (self.request.chain or self.request.group) and self.store_chain_results:
                 _, _, data = serialization.dumps(

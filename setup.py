@@ -10,7 +10,7 @@ setup(
     author="Chris Lee",
     author_email="sihrc.c.lee@gmail.com",
     packages=["celery_task_plugins"],
-    install_requires=["celery==4.3.0"],
+    install_requires=["celery>=4.3.0"],
     extras_require={
         "redis_chain_store_requires": redis_chain_store_requires,
         "test": ["pytest"] + redis_chain_store_requires,
